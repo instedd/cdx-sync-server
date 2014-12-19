@@ -1,24 +1,30 @@
-require 'rspec'
+require_relative 'spec_helper'
+
 require 'tempfile'
-require_relative '../lib/cdx_sync'
 
 
-describe CDXSync::AuthorizedKeys do
-  let(:keys) { ['todo', 'todo'] }
+describe AuthorizedKeys do
+  let(:clients) { [good_client('foo'), good_client('bar')] }
 
-  describe '::write_authorized_keys!' do
-    let(:authorized_keys_file) { Tempfile.new('authorizedkeys').tap(&:close) }  
-    let(:authorized_keys_path) { authorized_keys_file.path }
+  let(:sync_dir) { SyncDirectory.new('tmp/sync') }
 
-    before { CDXSync::AuthorizedKeys.write_authorized_keys! keys, to: authorized_keys_path }
-    after { authorized_keys_file.unlink }
+  let(:authorized_keys) { AuthorizedKeys.new(authorized_keys_file.path) }
+  let(:authorized_keys_file) { Tempfile.new('authorizedkeys').tap(&:close) }
 
-    it { expect(File.exists? authorized_keys_path).to be_true }
-    it { expect(File.read(authorized_keys_path).to include('todo'))}
+  after { authorized_keys_file.unlink }
+
+  describe '#write_authorized_keys!' do
+    before { authorized_keys.write_authorized_keys! clients, sync_dir }
+
+    it { expect(File.exists? authorized_keys.path).to be true }
+    it { expect(File.readlines(authorized_keys.path).size).to eq 2 }
   end
 
-  describe '::authorized_keys_for' do
-    let(:authorized_keys) { CDXSync::AuthorizedKeys.authorized_keys_for(keys) }
-    it { expect(authorized_keys).to eq('todo') }
+  describe '#write_authorized_keys!' do
+    before { File.write(authorized_keys.path, 'foobar') }
+    before { authorized_keys.append_authorized_keys! clients, sync_dir }
+
+    it { expect(File.exists? authorized_keys.path).to be true }
+    it { expect(File.readlines(authorized_keys.path).size).to eq 3 }
   end
 end
