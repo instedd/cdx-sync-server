@@ -1,8 +1,8 @@
-class SyncDirectory 
+class CDXSync::SyncDirectory
 
   attr_accessor :sync_path, :inbox_path, :outbox_path
 
-  def intialize(sync_path)
+  def initialize(sync_path)
     @sync_path = sync_path
   end
 
@@ -14,14 +14,19 @@ class SyncDirectory
     path_for client, 'inbox'
   end
 
+  # A generic glob for the path to any outbox,
+  # regardless of the client
   def inbox_glob
     glob_for 'inbox'
   end
 
+  # A generic glob for the path to any outbox,
+  # regardless of the client
   def outbox_glob
     glob_for 'outbox'
   end
 
+  # The path where client's inbound and outbox are 
   def client_sync_path(client)
     File.join sync_path, client.id
   end

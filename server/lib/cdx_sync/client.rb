@@ -1,7 +1,8 @@
-class Client
+# Represent a cdx-sync-client
+class CDXSync::Client
   attr_accessor :public_key, :id
 
-  def intitialize(id, public_key)
+  def initialize(id, public_key)
     @id = id
     @public_key = public_key
   end
@@ -11,8 +12,8 @@ class Client
     raise "Public key #{public_key} is not valid" unless match
   end
 
-  def authorized_keys(sync_dir, options)
-   ssh_command = "#{options[:rrsync_location]} #{sync_dir.client_sync_path id}"
+  def authorized_keys_entry(sync_dir)
+   ssh_command = "#{rrsync_location} #{sync_dir.client_sync_path self}"
    "\ncommand=\"#{ssh_command}\",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding #{public_key}"
  end
 

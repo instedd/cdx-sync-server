@@ -3,18 +3,17 @@ require 'filewatcher'
 
 module CDXSync
   class FileWatcher
-    def initialize(options = {})
+    def initialize(sync_dir, options = {})
       @jobs = Queue.new
 
-      @inbox_directory = "#{options[:sync_directory]}/inbox"
-      @watch_expression = "#{@inbox_directory}/**"
-
-      @debug_paths = options[:debug_paths] || false
-
-      @remove_processed_files = options[:remove_processed_files] || true
+      @sync_dir = sync_dir
+      @debug_paths = options[:debug_paths]
+      @remove_processed_files = options[:remove_processed_files]
     end
 
     def watch
+      puts "Watching #{sync_dir.sync_path}"
+
       enqueue_preexisting_files
       start_monitoring
       while true
@@ -24,17 +23,14 @@ module CDXSync
       end
     end
 
-    def ensure_sync_directory
-      puts "Initializing RSync in #{@inbox_directory}"
-      unless Dir.exists? @inbox_directory
-        FileUtils.mkdir_p @inbox_directory
-      end
-    end
-
     private
 
+    def watch_expression
+      @sync_dir.inbox_glob
+    end
+
     def enqueue_preexisting_files
-      preexisting_files = Dir[@watch_expression]
+      preexisting_files = Dir[watch_expression]
       if preexisting_files.any?
         puts "Enqueuing #{preexisting_files.size} preexisting file(s)."
         preexisting_files.each do |f|
@@ -45,9 +41,9 @@ module CDXSync
 
     def start_monitoring
       Thread.start do
-        puts "Monitoring of #{@watch_expression} started"
+        puts "Monitoring of #{watch_expression} started"
         begin
-          ::FileWatcher.new([@watch_expression], @debug_paths).watch do |path, event|
+          ::FileWatcher.new([watch_expression], @debug_paths).watch do |path, event|
             if event == :new
               puts "New file detected: #{path}."
               @jobs << path

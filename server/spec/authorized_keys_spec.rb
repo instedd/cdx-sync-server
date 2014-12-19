@@ -1,6 +1,7 @@
 require 'rspec'
 require 'tempfile'
-require 'cdx_sync'
+require_relative '../lib/cdx_sync'
+
 
 describe CDXSync::AuthorizedKeys do
   let(:keys) { ['todo', 'todo'] }
