@@ -1,15 +1,10 @@
-require 'rspec'
-
-require_relative '../lib/cdx_sync'
-
-include CDXSync
+require_relative 'spec_helper'
 
 describe Client do
   let(:dir) { SyncDirectory.new('tmp/sync') }
 
   context 'when public key is valid' do
-    let(:key) { 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4hzyCbJQ5RgrZPFz+rTscTuJ5NPuBIKiinXwkA38CE9+N37L8q9kMqxsbDumVFbamYVlS9fsmF1TqRRhobfJfZGptkcthQde83FWHQGaEQn8T4SG055N5SWNRjQTfMaK0uTTQ28BN44dhLluF/zp4UDHOKRVBrJY4SZq1M5ytkMc6mlZWbCAzqtIUUJOMKz4lHn5Os/d8temlYskaKQ1n+FuX5qJXNr1SW8euH72fjQndu78DCwVNwnnrG+nEe3a9m2QwL5xnX8f1ohAZ9IG41hwIOvB5UcrFenqYIpMPBCCOnizUcyIFJhegJDWh2oWlBo041emGOX3VCRjtGug3 fbulgarelli@Manass-MacBook-2.local' }
-    let(:client) { Client.new('myclient', key) }
+    let(:client) { good_client 'myclient' }
 
     before { client.validate! }
 
@@ -17,7 +12,7 @@ describe Client do
   end
 
   context 'when public key is not valid' do
-    let(:client) { Client.new('myclient', 'foobar') }
+    let(:client) { bad_client 'myclient' }
 
     it { expect { client.validate! }.to raise_error }
   end

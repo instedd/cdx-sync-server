@@ -1,7 +1,6 @@
-require 'rspec'
-require 'ostruct'
+require_relative 'spec_helper'
 
-require_relative '../lib/cdx_sync'
+require 'ostruct'
 
 describe SyncDirectory do
   let(:dir) { SyncDirectory.new('tmp/sync') }
