@@ -5,8 +5,11 @@ namespace :demo do
   desc "Inform when new files ar in the inbox"
 
   task :watch_files do
-    watcher = CDXSync::FileWatcher.new(sync_directory: 'tmp/cdxsync', debug_paths: true)
-    watcher.ensure_sync_directory
+
+    sync_dir = SynDirectory.new('tmp/cdxsync')
+    sync_dir.init_sync_path
+
+    watcher = CDXSync::FileWatcher.new(sync_dir, debug_paths: true)
     watcher.watch do |file|
       puts 'new file detected'
     end
