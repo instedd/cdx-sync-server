@@ -1,6 +1,6 @@
 module CDXSync
   class AuthorizedKeys
-    attr_accessor :path #TODO default path for authorizedkeys
+    attr_accessor :path
 
     def initialize(path = CDXSync.default_authorized_keys_path)
       @path = path

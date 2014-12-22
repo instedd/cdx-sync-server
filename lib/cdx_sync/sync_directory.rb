@@ -6,10 +6,24 @@ class CDXSync::SyncDirectory
     @sync_path = sync_path
   end
 
+  # Executes the given block with the client_id and
+  # file path for each file in the inbox directory
+  # that matches the given glob
+  def each_inbox_file(glob='*')
+    Dir.glob(File.join inbox_glob, glob) do |path|
+      client_id = /#{sync_path}\/(.+)\/inbox\/.*/.match(path)[1]
+      yield client_id, path
+    end
+  end
+
+  # Answers the outbox directory path for
+  # a given client
   def outbox_path(client)
     path_for client, 'outbox'
   end
 
+  # Answers the inbox directory path
+  # for a given client
   def inbox_path(client)
     path_for client, 'inbox'
   end
@@ -31,6 +45,8 @@ class CDXSync::SyncDirectory
     File.join sync_path, client.id
   end
 
+  # Ensures that the sync_path exists
+  # This method creates it if it does not exist
   def init_sync_path!
     FileUtils.mkdir_p sync_path unless Dir.exists? sync_path
   end
