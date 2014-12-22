@@ -2,15 +2,15 @@ module CDXSync
   class AuthorizedKeys
     attr_accessor :path #TODO default path for authorizedkeys
 
-    def initialize(path)
+    def initialize(path = CDXSync.default_authorized_keys_path)
       @path = path
     end
 
-    def append_authorized_keys!(clients, sync_dir)
+    def append!(clients, sync_dir)
       open_and_write 'a', clients, sync_dir
     end
 
-    def write_authorized_keys!(clients, sync_dir)
+    def write!(clients, sync_dir)
       open_and_write 'w', clients, sync_dir
     end
 

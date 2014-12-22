@@ -13,16 +13,16 @@ describe AuthorizedKeys do
 
   after { authorized_keys_file.unlink }
 
-  describe '#write_authorized_keys!' do
-    before { authorized_keys.write_authorized_keys! clients, sync_dir }
+  describe '#write!' do
+    before { authorized_keys.write! clients, sync_dir }
 
     it { expect(File.exists? authorized_keys.path).to be true }
     it { expect(File.readlines(authorized_keys.path).size).to eq 2 }
   end
 
-  describe '#write_authorized_keys!' do
+  describe '#append!' do
     before { File.write(authorized_keys.path, 'foobar') }
-    before { authorized_keys.append_authorized_keys! clients, sync_dir }
+    before { authorized_keys.append! clients, sync_dir }
 
     it { expect(File.exists? authorized_keys.path).to be true }
     it { expect(File.readlines(authorized_keys.path).size).to eq 3 }

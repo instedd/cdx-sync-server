@@ -1,6 +1,14 @@
 module CDXSync
-  def rrsync_location
+  def self.rrsync_location
     '/usr/bin/rrsync'
+  end
+
+  def self.default_sync_dir_path
+    nil
+  end
+
+  def self.default_authorized_keys_path
+    nil
   end
 end
 
