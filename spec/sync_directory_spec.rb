@@ -12,9 +12,9 @@ describe SyncDirectory do
 
     it { expect(dir.inbox_glob).to eq 'tmp/sync/**/inbox/**' }
 
-    it { expect(dir.inbox_path(client)).to eq 'tmp/sync/foo/inbox' }
+    it { expect(dir.inbox_path(client.id)).to eq 'tmp/sync/foo/inbox' }
 
-    it { expect(dir.outbox_path(client)).to eq 'tmp/sync/foo/outbox' }
+    it { expect(dir.outbox_path(client.id)).to eq 'tmp/sync/foo/outbox' }
 
     it { expect(dir.sync_path).to eq 'tmp/sync' }
   end

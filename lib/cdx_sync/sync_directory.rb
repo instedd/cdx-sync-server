@@ -18,14 +18,14 @@ class CDXSync::SyncDirectory
 
   # Answers the outbox directory path for
   # a given client
-  def outbox_path(client)
-    path_for client, 'outbox'
+  def outbox_path(client_id)
+    path_for client_id, 'outbox'
   end
 
   # Answers the inbox directory path
-  # for a given client
-  def inbox_path(client)
-    path_for client, 'inbox'
+  # for a given client_id
+  def inbox_path(client_id)
+    path_for client_id, 'inbox'
   end
 
   # A generic glob for the path to any outbox,
@@ -41,8 +41,8 @@ class CDXSync::SyncDirectory
   end
 
   # The path where client's inbound and outbox are 
-  def client_sync_path(client)
-    File.join sync_path, client.id
+  def client_sync_path(client_id)
+    File.join sync_path, client_id
   end
 
   # Ensures that the sync_path exists
@@ -51,18 +51,18 @@ class CDXSync::SyncDirectory
     FileUtils.mkdir_p sync_path unless Dir.exists? sync_path
   end
 
-  def init_client_sync_paths!(client)
-    inbox_path = self.inbox_path client
-    outbox_path = self.outbox_path client
+  def init_client_sync_paths!(client_id)
+    inbox_path = self.inbox_path client_id
+    outbox_path = self.outbox_path client_id
 
-    Dir.mkdir inbox_path unless Dir.exists? inbox_path
-    Dir.mkdir outbox_path unless Dir.exists? outbox_path
+    FileUtils.mkdir_p inbox_path unless Dir.exists? inbox_path
+    FileUtils.mkdir_p outbox_path unless Dir.exists? outbox_path
   end
 
   private
 
-  def path_for(client, area)
-    File.join client_sync_path(client), area
+  def path_for(client_id, area)
+    File.join client_sync_path(client_id), area
   end
 
   def glob_for(area)
