@@ -19,6 +19,7 @@ module CDXSync
     def open_and_write(mode, clients, sync_dir)
       keys = authorized_keys_for(clients, sync_dir).join("\n")
       keys = "\n" + keys if mode == 'a'
+      clients.each { |c| sync_dir.init_client_sync_paths!(c.id) }
       File.open(path, mode) do |file|
         file << keys
       end
