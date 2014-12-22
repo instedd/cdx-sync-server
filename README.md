@@ -8,24 +8,27 @@ Welcome to CDX Synchonization Server. This is a simple library for adding file r
 Just run 
 
 ```
-bundle install
-gem build cdx_sync.gemspec
+    bundle install
+    gem build cdx-sync-server.gemspec
 ```
 
 # Using it
 
 Add this line to your application's Gemfile:
-
-    gem 'cdx_sync'
-
+```
+    gem 'cdx-sync-server'
+```
 And then execute:
 
+```
     $ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install cdx_sync
-
+```
+    $ gem install cdx-sync-server
+```
 # Contributing
 
 1. Fork it
