@@ -9,4 +9,8 @@ Gem::Specification.new do |s|
   s.files       = Dir["lib/**/**"]
   s.homepage    = 'http://github.com/instedd/cdx-sync-server'
   s.license       = 'MIT'
+
+  s.add_development_dependency "rspec"
+  s.add_runtime_dependency 'filewatcher'
+
 end

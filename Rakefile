@@ -1,3 +1,6 @@
+require 'bundler'
+Bundler::GemHelper.install_tasks
+
 require_relative './lib/cdx_sync'
 
 namespace :demo do
