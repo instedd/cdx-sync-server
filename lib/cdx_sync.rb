@@ -12,6 +12,7 @@ module CDXSync
   end
 end
 
+require_relative '../lib/cdx_sync/file_utils.rb'
 require_relative './cdx_sync/client.rb'
 require_relative './cdx_sync/sync_directory.rb'
 require_relative './cdx_sync/file_watcher.rb'

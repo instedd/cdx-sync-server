@@ -6,6 +6,10 @@ module CDXSync
       @path = path
     end
 
+    def ensure_path!
+      FileUtils.ensure_path! File.dirname(path)
+    end
+
     def append!(clients, sync_dir)
       open_and_write 'a', clients, sync_dir
     end
@@ -17,9 +21,11 @@ module CDXSync
     private
 
     def open_and_write(mode, clients, sync_dir)
+      ensure_path!
+
       keys = authorized_keys_for(clients, sync_dir).join("\n")
       keys = "\n" + keys if mode == 'a'
-      clients.each { |c| sync_dir.init_client_sync_paths!(c.id) }
+
       File.open(path, mode) do |file|
         file << keys
       end

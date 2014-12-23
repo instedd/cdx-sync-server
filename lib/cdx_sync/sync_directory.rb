@@ -47,16 +47,16 @@ class CDXSync::SyncDirectory
 
   # Ensures that the sync_path exists
   # This method creates it if it does not exist
-  def init_sync_path!
-    FileUtils.mkdir_p sync_path unless Dir.exists? sync_path
+  def ensure_sync_path!
+    FileUtils.ensure_path! sync_path
   end
 
-  def init_client_sync_paths!(client_id)
+  def ensure_client_sync_paths!(client_id)
     inbox_path = self.inbox_path client_id
     outbox_path = self.outbox_path client_id
 
-    FileUtils.mkdir_p inbox_path unless Dir.exists? inbox_path
-    FileUtils.mkdir_p outbox_path unless Dir.exists? outbox_path
+    FileUtils.ensure_path! inbox_path
+    FileUtils.ensure_path! outbox_path
   end
 
   private
