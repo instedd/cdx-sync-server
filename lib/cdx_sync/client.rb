@@ -13,8 +13,8 @@ class CDXSync::Client
   end
 
   def authorized_keys_entry(sync_dir)
-   ssh_command = "#{CDXSync.rrsync_location} #{sync_dir.client_sync_path id}"
-   "command=\"#{ssh_command}\",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding #{public_key}"
- end
+    ssh_command = "#{CDXSync.rrsync_location} #{sync_dir.client_sync_path id}"
+    "command=\"#{ssh_command}\",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding #{public_key}"
+  end
 
 end

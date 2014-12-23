@@ -9,11 +9,14 @@ class CDXSync::SyncDirectory
   # Executes the given block with the client_id and
   # file path for each file in the inbox directory
   # that matches the given glob
-  def each_inbox_file(glob='*')
-    Dir.glob(File.join inbox_glob, glob) do |path|
-      client_id = /#{sync_path}\/(.+)\/inbox\/.*/.match(path)[1]
-      yield client_id, path
+  def each_inbox_file(glob='**')
+    Dir.glob(inbox_glob(glob)) do |path|
+      yield client_id_from_inbox_path(path), path
     end
+  end
+
+  def if_inbox_file(path, glob='**')
+    yield client_id_from_inbox_path(path), path if File.fnmatch(inbox_glob(glob), path)
   end
 
   # Answers the outbox directory path for
@@ -30,14 +33,14 @@ class CDXSync::SyncDirectory
 
   # A generic glob for the path to any outbox,
   # regardless of the client
-  def inbox_glob
-    glob_for 'inbox'
+  def inbox_glob(glob='**')
+    glob_for 'inbox', glob
   end
 
   # A generic glob for the path to any outbox,
   # regardless of the client
-  def outbox_glob
-    glob_for 'outbox'
+  def outbox_glob(glob='**')
+    glob_for 'outbox', glob
   end
 
   # The path where client's inbound and outbox are 
@@ -61,11 +64,15 @@ class CDXSync::SyncDirectory
 
   private
 
+  def client_id_from_inbox_path(path)
+    /#{sync_path}\/(.+)\/inbox\/.*/.match(path)[1]
+  end
+
   def path_for(client_id, area)
     File.join client_sync_path(client_id), area
   end
 
-  def glob_for(area)
-    "#{sync_path}/**/#{area}/**"
+  def glob_for(area, glob)
+    File.join sync_path, '**', area, glob
   end
 end

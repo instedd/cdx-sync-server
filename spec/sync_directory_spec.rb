@@ -17,44 +17,70 @@ describe SyncDirectory do
     it { expect(dir.outbox_path(client.id)).to eq 'tmp/sync/foo/outbox' }
 
     it { expect(dir.sync_path).to eq 'tmp/sync' }
+
   end
 
-  describe '#each_inbox_file' do
+  describe 'filters' do
     let(:path) { 'spec/data/sync' }
     let(:results) { [] }
     let(:collect) { lambda { |client_id, path| results << [client_id, path] } }
 
-    context 'when sync path is relative' do
+    describe '#if_inbox_file' do
       let(:dir) { SyncDirectory.new(path) }
 
-      it 'visits each file' do
-        dir.each_inbox_file &collect
-        expect(results).to include %W(123 #{path}/123/inbox/bar.csv),
-                                   %W(123 #{path}/123/inbox/foo.json),
-                                   %W(343 #{path}/343/inbox/baz.rb)
+      it 'runs if file matches' do
+        dir.if_inbox_file("#{path}/12345/inbox/foo.csv", &collect)
+        expect(results).to eq [%W(12345 #{path}/12345/inbox/foo.csv)]
       end
 
-      it 'visits each file that matched' do
-        dir.each_inbox_file('*.csv', &collect)
-        expect(results).to eq [%W(123 #{path}/123/inbox/bar.csv)]
+      it 'runs if file matches with glob' do
+        dir.if_inbox_file("#{path}/12345/inbox/foo.csv", '*.csv', &collect)
+        expect(results).to eq [%W(12345 #{path}/12345/inbox/foo.csv)]
+      end
+
+      it 'does not run if file not matches glob' do
+        dir.if_inbox_file("#{path}/12345/inbox/foo.csv", '*.json', &collect)
+        expect(results).to eq []
+      end
+
+      it 'does not run if file not matches inbox' do
+        dir.if_inbox_file("#{path}/12345/outbox/foo.csv", &collect)
+        expect(results).to eq []
       end
     end
 
-    context 'when sync path is absolute' do
-      let(:dir) { SyncDirectory.new(File.absolute_path(path)) }
+    describe '#each_inbox_file' do
+      context 'when sync path is relative' do
+        let(:dir) { SyncDirectory.new(path) }
 
-      it 'visits each file' do
-        dir.each_inbox_file &collect
-        expect(results).to include ['123', File.absolute_path("#{path}/123/inbox/bar.csv")],
-                                   ['123', File.absolute_path("#{path}/123/inbox/foo.json")],
-                                   ['343', File.absolute_path("#{path}/343/inbox/baz.rb")]
+        it 'visits each file' do
+          dir.each_inbox_file &collect
+          expect(results).to include %W(123 #{path}/123/inbox/bar.csv),
+                                     %W(123 #{path}/123/inbox/foo.json),
+                                     %W(343 #{path}/343/inbox/baz.rb)
+        end
+
+        it 'visits each file that matched' do
+          dir.each_inbox_file('*.csv', &collect)
+          expect(results).to eq [%W(123 #{path}/123/inbox/bar.csv)]
+        end
       end
 
-      it 'visits each file that matched' do
-        dir.each_inbox_file('*.csv', &collect)
-        expect(results).to eq [['123', File.absolute_path("#{path}/123/inbox/bar.csv")]]
+      context 'when sync path is absolute' do
+        let(:dir) { SyncDirectory.new(File.absolute_path(path)) }
+
+        it 'visits each file' do
+          dir.each_inbox_file &collect
+          expect(results).to include ['123', File.absolute_path("#{path}/123/inbox/bar.csv")],
+                                     ['123', File.absolute_path("#{path}/123/inbox/foo.json")],
+                                     ['343', File.absolute_path("#{path}/343/inbox/baz.rb")]
+        end
+
+        it 'visits each file that matched' do
+          dir.each_inbox_file('*.csv', &collect)
+          expect(results).to eq [['123', File.absolute_path("#{path}/123/inbox/bar.csv")]]
+        end
       end
     end
   end
-
 end
