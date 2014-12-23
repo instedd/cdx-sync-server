@@ -12,7 +12,7 @@ module CDXSync
     end
 
     def watch
-      puts "Watching #{sync_dir.sync_path}"
+      puts "Watching #{@sync_dir.sync_path}"
 
       enqueue_preexisting_files
       start_monitoring
