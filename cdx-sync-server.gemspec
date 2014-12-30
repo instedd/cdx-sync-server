@@ -11,6 +11,6 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
 
   s.add_development_dependency "rspec"
-  s.add_dependency 'filewatcher'
+  s.add_dependency 'filewatcher', '0.3.6'
 
 end
