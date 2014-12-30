@@ -10,6 +10,7 @@ GEM
     diff-lcs (1.2.5)
     filewatcher (0.3.6)
       trollop (~> 2.0)
+    rake (10.4.2)
     rspec (3.1.0)
       rspec-core (~> 3.1.0)
       rspec-expectations (~> 3.1.0)
@@ -29,4 +30,5 @@ PLATFORMS
 
 DEPENDENCIES
   cdx-sync-server!
+  rake
   rspec

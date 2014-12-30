@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/instedd/cdx-sync-server'
   s.license       = 'MIT'
 
-  s.add_development_dependency "rspec"
   s.add_dependency 'filewatcher', '0.3.6'
-
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec"
 end

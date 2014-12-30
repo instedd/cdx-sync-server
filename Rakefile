@@ -1,7 +1,11 @@
 require 'bundler'
-Bundler::GemHelper.install_tasks
-
+require 'rspec/core/rake_task'
 require_relative './lib/cdx_sync'
+
+Bundler::GemHelper.install_tasks
+RSpec::Core::RakeTask.new(:test)
+
+task :default => :test
 
 namespace :demo do
 
