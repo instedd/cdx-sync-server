@@ -14,7 +14,7 @@ describe Client do
   context 'when public key is not valid' do
     let(:client) { bad_client 'myclient' }
 
-    it { expect { client.validate! }.to raise_error }
+    it { expect { client.validate! }.to raise_error(CDXSync::InvalidPublicKeyError) }
   end
 end
 
