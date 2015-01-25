@@ -19,31 +19,39 @@ class CDXSync::SyncDirectory
     yield client_id_from_inbox_path(path), path if File.fnmatch(inbox_glob(glob), path)
   end
 
+  def outbox_area
+    'outbox'
+  end
+
+  def inbox_area
+    'inbox'
+  end
+
   # Answers the outbox directory path for
   # a given client
   def outbox_path(client_id)
-    path_for client_id, 'outbox'
+    path_for client_id, outbox_area
   end
 
   # Answers the inbox directory path
   # for a given client_id
   def inbox_path(client_id)
-    path_for client_id, 'inbox'
+    path_for client_id, inbox_area
   end
 
   # A generic glob for the path to any outbox,
   # regardless of the client
   def inbox_glob(glob='**')
-    glob_for 'inbox', glob
+    glob_for glob, inbox_area
   end
 
   # A generic glob for the path to any outbox,
   # regardless of the client
   def outbox_glob(glob='**')
-    glob_for 'outbox', glob
+    glob_for glob, outbox_area
   end
 
-  # The path where client's inbound and outbox are 
+  # The path where client's inbound and outbox are
   def client_sync_path(client_id)
     File.join sync_path, client_id
   end
@@ -72,7 +80,7 @@ class CDXSync::SyncDirectory
     File.join client_sync_path(client_id), area
   end
 
-  def glob_for(area, glob)
+  def glob_for(glob, area)
     File.join sync_path, '**', area, glob
   end
 end

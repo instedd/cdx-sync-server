@@ -2,7 +2,6 @@ require_relative 'spec_helper'
 
 require 'tempfile'
 
-
 describe AuthorizedKeys do
   let(:clients) { [good_client('foo'), good_client('bar')] }
 
