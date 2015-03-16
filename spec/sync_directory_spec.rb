@@ -16,6 +16,8 @@ describe SyncDirectory do
 
     it { expect(dir.outbox_path(client.id)).to eq 'tmp/sync/foo/outbox' }
 
+    it { expect(dir.error_path(client.id)).to eq 'tmp/sync/foo/error' }
+
     it { expect(dir.sync_path).to eq 'tmp/sync' }
 
   end
@@ -82,5 +84,23 @@ describe SyncDirectory do
         end
       end
     end
+
+    describe '#move_inbox_file_to_error' do
+      let(:dir) { SyncDirectory.new(path) }
+      let(:filename) { File.join(path, '123', 'inbox', 'err.csv') }
+      let(:target) { File.join(path, '123', 'error', 'err.csv') }
+
+      before(:each) { File.open(filename, 'w') { |io| io.write("foo") } }
+      after(:each)  { FileUtils.rm_rf(File.join(path, '123', 'error')) }
+
+      it "should move file to new error folder" do
+        dir.move_inbox_file_to_error(filename)
+        expect(File.exist?(filename)).to be false
+        expect(File.exist?(target)).to be true
+        expect(File.read(target)).to eq('foo')
+      end
+
+    end
+
   end
 end

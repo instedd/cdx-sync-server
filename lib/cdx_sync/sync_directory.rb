@@ -19,12 +19,23 @@ class CDXSync::SyncDirectory
     yield client_id_from_inbox_path(path), path if File.fnmatch(inbox_glob(glob), path)
   end
 
+  def move_inbox_file_to_error(path)
+    client_id = client_id_from_inbox_path(path)
+    destination = path_for(client_id, error_area)
+    FileUtils.mkdir_p destination
+    FileUtils.move path, destination
+  end
+
   def outbox_area
     'outbox'
   end
 
   def inbox_area
     'inbox'
+  end
+
+  def error_area
+    'error'
   end
 
   # Answers the outbox directory path for
@@ -37,6 +48,12 @@ class CDXSync::SyncDirectory
   # for a given client_id
   def inbox_path(client_id)
     path_for client_id, inbox_area
+  end
+
+  # Answers the error directory path
+  # for a given client_id
+  def error_path(client_id)
+    path_for client_id, error_area
   end
 
   # A generic glob for the path to any outbox,
@@ -63,11 +80,9 @@ class CDXSync::SyncDirectory
   end
 
   def ensure_client_sync_paths!(client_id)
-    inbox_path = self.inbox_path client_id
-    outbox_path = self.outbox_path client_id
-
-    FileUtils.ensure_path! inbox_path
-    FileUtils.ensure_path! outbox_path
+    FileUtils.ensure_path! self.inbox_path(client_id)
+    FileUtils.ensure_path! self.outbox_path(client_id)
+    FileUtils.ensure_path! self.error_path(client_id)
   end
 
   private
