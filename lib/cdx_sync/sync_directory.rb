@@ -16,7 +16,7 @@ class CDXSync::SyncDirectory
   end
 
   def if_inbox_file(path, glob='**')
-    yield client_id_from_inbox_path(path), path if File.fnmatch(inbox_glob(glob), path)
+    yield client_id_from_inbox_path(path), path if inbox_file_matches?(path, glob)
   end
 
   def move_inbox_file_to_error(path)
@@ -97,5 +97,13 @@ class CDXSync::SyncDirectory
 
   def glob_for(glob, area)
     File.join sync_path, '**', area, glob
+  end
+
+  def inbox_file_matches?(path, glob)
+    if defined?(File::FNM_EXTGLOB)
+      File.fnmatch(inbox_glob(glob), path, File::FNM_EXTGLOB)
+    else
+      File.fnmatch(inbox_glob(glob), path)
+    end
   end
 end
